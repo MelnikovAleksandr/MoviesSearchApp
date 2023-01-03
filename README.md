@@ -23,3 +23,5 @@ MoviesSearchApp
 ✅ Paging
 
 ✅ Data Binding Library
+
+✅ No Fragment Splash Screen 
