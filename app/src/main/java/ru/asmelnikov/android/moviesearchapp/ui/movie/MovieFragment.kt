@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.asmelnikov.android.moviesearchapp.MovieViewModel
 import ru.asmelnikov.android.moviesearchapp.databinding.FragmentMovieBinding
@@ -16,20 +16,16 @@ import ru.asmelnikov.android.moviesearchapp.databinding.FragmentMovieBinding
 @AndroidEntryPoint
 class MovieFragment : Fragment() {
 
-    lateinit var binding: FragmentMovieBinding
+    private lateinit var binding: FragmentMovieBinding
 
     val viewModel: MovieViewModel by viewModels()
 
-    val movieAdapter = MoviePagingAdapter()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val movieAdapter = MoviePagingAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMovieBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -51,6 +47,11 @@ class MovieFragment : Fragment() {
                 return false
             }
         })
+
+        movieAdapter.onMovieClick {
+            val action = MovieFragmentDirections.actionMovieFragmentToDetailsFragment(it)
+            findNavController().navigate(action)
+        }
 
         viewModel.list.observe(viewLifecycleOwner) {
             movieAdapter.submitData(lifecycle, it)
