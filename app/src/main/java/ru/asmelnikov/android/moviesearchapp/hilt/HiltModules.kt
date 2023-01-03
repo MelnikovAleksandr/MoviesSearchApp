@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.asmelnikov.android.moviesearchapp.remote.MovieInterface
+import ru.asmelnikov.android.moviesearchapp.ui.details.MovieDetailsRepository
 import ru.asmelnikov.android.moviesearchapp.utils.Constants.BASE_URL
 
 @InstallIn(SingletonComponent::class)
@@ -21,5 +22,8 @@ object HiltModules {
             ).build().create(MovieInterface::class.java)
     }
 
-
+    @Provides
+    fun provideRepository(movieInterface: MovieInterface): MovieDetailsRepository {
+        return MovieDetailsRepository(movieInterface)
+    }
 }

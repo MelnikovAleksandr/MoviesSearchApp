@@ -12,6 +12,8 @@ import ru.asmelnikov.android.moviesearchapp.databinding.ViewHolderMovieBinding
 class MoviePagingAdapter :
     PagingDataAdapter<Movie, MoviePagingAdapter.MyViewHolder>(DIFF_UTIL) {
 
+    private var onClick: ((String) -> Unit)? = null
+
     companion object {
         val DIFF_UTIL = object : DiffUtil.ItemCallback<Movie>() {
             override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
@@ -24,11 +26,21 @@ class MoviePagingAdapter :
         }
     }
 
+    fun onMovieClick(listener: (String) -> Unit) {
+        onClick = listener
+    }
+
     inner class MyViewHolder(val viewDataBinding: ViewHolderMovieBinding) :
         RecyclerView.ViewHolder(viewDataBinding.root)
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.viewDataBinding.setVariable(BR.movie, getItem(position))
+        val data = getItem(position)
+        holder.viewDataBinding.setVariable(BR.movie, data)
+        holder.viewDataBinding.root.setOnClickListener {
+            onClick?.let {
+                it(data?.imdbID!!)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
